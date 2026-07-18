@@ -63,7 +63,8 @@ button {
 <input id="song" placeholder="Názov piesne">
 <input id="name" placeholder="Tvoje meno (voliteľné)">
 
-<button>Pridať želanie</button>
+<button id="addSong">Pridať želanie</button>
+  
 
 <h2>🎶 Želania hostí</h2>
 
@@ -98,4 +99,42 @@ Zoznam skladieb sa načíta po pripojení databázy.
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+</script>
+<script type="module">
+
+import { getDatabase, ref, push, set, onValue }
+from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+const db = getDatabase();
+
+const button = document.getElementById("addSong");
+
+button.addEventListener("click", async () => {
+
+  const artist = document.getElementById("artist").value;
+  const song = document.getElementById("song").value;
+  const name = document.getElementById("name").value;
+
+  if (!artist || !song) {
+    alert("Prosím vyplň interpreta a názov piesne.");
+    return;
+  }
+
+  const songRef = push(ref(db, "songs"));
+
+  await set(songRef, {
+    artist: artist,
+    song: song,
+    name: name,
+    time: Date.now()
+  });
+
+  alert("🎵 Pesnička pridaná!");
+
+  document.getElementById("artist").value = "";
+  document.getElementById("song").value = "";
+  document.getElementById("name").value = "";
+
+});
+
 </script>
