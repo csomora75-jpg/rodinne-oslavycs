@@ -52,8 +52,6 @@ button {
 </head>
 
 <body>
-
-<div id="songList"></div>
   
 
 <h1>🎵 Rodinné OslavyCS 🎵</h1>
@@ -67,11 +65,8 @@ button {
 <button id="addSong">Pridať želanie</button>
   
 
-<h2>🎶 Želania hostí</h2>
-
-<div class="card">
-Zoznam skladieb sa načíta po pripojení databázy.
-</div>
+<h2>🎶 Želania hostí</h
+<div id="songList"></div>
 
 </div>
 
@@ -81,7 +76,8 @@ Zoznam skladieb sa načíta po pripojení databázy.
 
 <script type="module">
 
-import { getDatabase, ref, push, set }
+import { getDatabase, ref, push, set, onValue }
+
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
 import { initializeApp }
@@ -125,5 +121,26 @@ document.getElementById("addSong").addEventListener("click", async () => {
   alert("🎵 Pesnička pridaná!");
 
 });
+const list = document.getElementById("songList");
 
+onValue(ref(db, "songs"), (snapshot) => {
+
+  list.innerHTML = "";
+
+  snapshot.forEach((child) => {
+
+    const data = child.val();
+
+    list.innerHTML += `
+      <div class="card">
+        🎤 ${data.artist}<br>
+        🎵 ${data.song}<br>
+        👤 ${data.name || "Hosť"}
+      </div>
+    `;
+
+  });
+
+});
+  
 </script>
