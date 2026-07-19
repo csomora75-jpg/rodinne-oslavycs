@@ -150,6 +150,26 @@ onValue(ref(db, "songs"), (snapshot) => {
 });
   
 </script>
+...
+});
+
+</script>
+
+<script>
+function playYoutube(artist, song){
+
+    const search = encodeURIComponent(artist + " " + song);
+
+    window.open(
+      "https://www.youtube.com/results?search_query=" + search,
+      "_blank"
+    );
+
+}
+</script>
+
+</body>
+</html>
 
 function playYoutube(artist, song){
 
