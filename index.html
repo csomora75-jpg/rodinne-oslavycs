@@ -143,9 +143,6 @@ onValue(ref(db, "songs"), (snapshot) => {
     <p>🎵 ${data.song}</p>
     <p>👤 ${data.name || "Hosť"}</p>
 
-    <button onclick="nowPlaying('${data.artist}','${data.song}')">
-  🎧 Teraz hrá
-</button>
 
 <button onclick="playYoutube('${data.artist}','${data.song}')">
   ▶️ YouTube
