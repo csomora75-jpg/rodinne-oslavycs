@@ -50,7 +50,79 @@ button {
 <h1>🎧 DJ Panel<br>Rodinné OslavyCS</h1>
 
 <div id="songList"></div>
+<script type="module">
 
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+import { getDatabase, ref, onValue }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
+  authDomain: "rodinne-oslavycs.firebaseapp.com",
+  databaseURL: "https://rodinne-oslavycs-default-rtdb.firebaseio.com",
+  projectId: "rodinne-oslavycs",
+  storageBucket: "rodinne-oslavycs.firebasestorage.app",
+  messagingSenderId: "222862508260",
+  appId: "1:222862508260:web:dfaf0baccb068ddcf42cf1"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+const list = document.getElementById("songList");
+
+
+onValue(ref(db, "songs"), (snapshot) => {
+
+  list.innerHTML = "";
+
+  snapshot.forEach((child) => {
+
+    const data = child.val();
+
+    list.innerHTML += `
+    
+    <div class="card">
+
+      🎤 ${data.artist}<br>
+      🎵 ${data.song}<br>
+      👤 ${data.name || "Hosť"}
+
+      <br><br>
+
+      <button onclick="playYoutube('${data.artist}','${data.song}')">
+      ▶️ YouTube
+      </button>
+
+    </div>
+
+    `;
+
+  });
+
+});
+
+
+window.playYoutube = function(artist, song){
+
+ const search =
+ encodeURIComponent(artist + " " + song);
+
+ window.open(
+ "https://www.youtube.com/results?search_query=" + search,
+ "_blank"
+ );
+
+}
+
+
+</script>
+  
 
 </body>
 
