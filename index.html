@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="sk">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -8,186 +10,292 @@
 
 <style>
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #000;
-  color: #d4af37;
-  text-align: center;
+body{
+background:radial-gradient(circle,#222,#000);
+color:#d4af37;
+font-family:Arial;
+text-align:center;
+margin:0;
 }
 
-.container {
-  padding: 20px;
+.container{
+padding:20px;
 }
 
-h1 {
-  font-size: 32px;
+h1{
+font-size:32px;
 }
 
-h2 {
-  margin-top: 30px;
+input,button{
+
+width:90%;
+max-width:400px;
+
+padding:15px;
+margin:8px;
+
+border-radius:12px;
+
+border:0;
+
+font-size:18px;
+
 }
 
-input, button {
-  width: 90%;
-  max-width: 400px;
-  padding: 15px;
-  margin: 8px;
-  border-radius: 10px;
-  border: none;
-  font-size: 18px;
+
+input{
+background:white;
 }
 
-input {
-  background: white;
+
+button{
+
+background:#d4af37;
+
+color:black;
+
+font-weight:bold;
+
 }
 
-button {
-  background: #d4af37;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
+
+.card{
+
+background:#111;
+
+max-width:450px;
+
+margin:15px auto;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 0 15px #d4af37;
+
 }
 
-.card {
-  background: #111;
-  margin: 15px auto;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 450px;
+
+.now{
+
+border:2px solid #d4af37;
+
+font-size:20px;
+
 }
 
-.now {
-  border: 2px solid #d4af37;
-}
 
 </style>
 
+
 </head>
+
+
 
 <body>
 
+
 <div class="container">
 
-<h1>🎵 Rodinné OslavyCS 🎵</h1>
 
-<p>Pošli svoju obľúbenú pesničku</p>
+<h1>
+🎵 Rodinné OslavyCS 🎵
+</h1>
+
+
+<p>
+Pošli svoju obľúbenú skladbu DJ-ovi
+</p>
+
 
 
 <input id="artist" placeholder="Interpret">
 
+
 <input id="song" placeholder="Názov piesne">
+
 
 <input id="name" placeholder="Tvoje meno (voliteľné)">
 
 
+
 <button id="addSong">
-Pridať želanie
+🎶 Poslať želanie
 </button>
+
 
 
 <div class="card now">
 
-<h2>🎧 Teraz hrá</h2>
+<h2>
+🎧 Teraz hrá
+</h2>
 
 <p id="nowPlaying">
-Nič nehrá
+Čakám na hudbu...
 </p>
 
 </div>
 
 
-<h2>🎶 Želania hostí</h2>
 
+<div class="card">
 
-<div id="songList"></div>
+<h2>
+✅ Stav
+</h2>
+
+<p id="status">
+Pripravené
+</p>
+
+</div>
+
 
 
 </div>
-<script>
 
 
 
-</script>
+<script type="module">
 
-</body>
 
-<script>
+import { initializeApp }
 
-const addSong = document.getElementById("addSong");
-const songList = document.getElementById("songList");
-const nowPlaying = document.getElementById("nowPlaying");
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-let songs = [];
 
-addSong.addEventListener("click", () => {
+import { getDatabase, ref, push, set, onValue }
 
-    const artist = document.getElementById("artist").value.trim();
-    const song = document.getElementById("song").value.trim();
-    const name = document.getElementById("name").value.trim();
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
-    if (artist === "" || song === "") {
-        alert("Vyplň interpreta aj názov piesne.");
-        return;
-    }
 
-    songs.push({
-        artist,
-        song,
-        name
-    });
 
-    document.getElementById("artist").value = "";
-    document.getElementById("song").value = "";
-    document.getElementById("name").value = "";
 
-    renderSongs();
+
+const firebaseConfig = {
+
+
+apiKey:"AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
+
+authDomain:"rodinne-oslavycs.firebaseapp.com",
+
+databaseURL:"https://rodinne-oslavycs-default-rtdb.firebaseio.com",
+
+projectId:"rodinne-oslavycs",
+
+storageBucket:"rodinne-oslavycs.firebasestorage.app",
+
+messagingSenderId:"222862508260",
+
+appId:"1:222862508260:web:dfaf0baccb068ddcf42cf1"
+
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+
+const db=getDatabase(app);
+
+
+
+
+document
+.getElementById("addSong")
+.onclick=()=>{
+
+
+let artist=document.getElementById("artist").value.trim();
+
+let song=document.getElementById("song").value.trim();
+
+let name=document.getElementById("name").value.trim();
+
+
+
+if(!artist || !song){
+
+alert("Vyplň interpreta a názov piesne.");
+
+return;
+
+}
+
+
+
+let newSong=push(ref(db,"songs"));
+
+
+
+set(newSong,{
+
+artist:artist,
+
+song:song,
+
+name:name || "Hosť",
+
+played:false,
+
+time:Date.now()
+
 });
 
-function renderSongs() {
 
-    songList.innerHTML = "";
 
-    songs.forEach((item, index) => {
 
-        const div = document.createElement("div");
-        div.className = "card";
+document.getElementById("artist").value="";
 
-        div.innerHTML = `
-            <h3>${item.artist}</h3>
-            <p>${item.song}</p>
-            <small>${item.name ? "Želá si: " + item.name : ""}</small>
-            <br><br>
-            <button onclick="playSong(${index})">
-                Prehrať
-            </button>
-        `;
+document.getElementById("song").value="";
 
-        songList.appendChild(div);
+document.getElementById("name").value="";
 
-    });
+
+
+document.getElementById("status").innerHTML=
+
+"✅ Želanie odoslané DJ-ovi";
+
+
+};
+
+
+
+
+
+
+// zobraz aktuálnu skladbu
+
+
+onValue(ref(db,"nowPlaying"),snap=>{
+
+
+let data=snap.val();
+
+
+if(data){
+
+
+document.getElementById("nowPlaying").innerHTML=
+
+`
+🎵 <b>${data.artist}</b><br>
+${data.song}
+`;
 
 }
 
-function playSong(index) {
 
-    const item = songs[index];
+});
 
-    nowPlaying.innerHTML =
-        "🎵 " + item.artist + " – " + item.song;
 
-    songs.splice(index, 1);
-
-    renderSongs();
-
-}
 
 </script>
 
+
 </body>
-</html>
 
-  
 </html>
-
-  
