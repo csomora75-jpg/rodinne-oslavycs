@@ -71,9 +71,7 @@ button {
   
 <div id="songList"></div>
   <div class="card">
-  🎧 Teraz hrá:
-  <p id="nowPlaying">Nič nehrá</p>
-  </div>
+
   
 
 </div>
@@ -81,6 +79,20 @@ button {
 
 
 <script type="module">
+
+  onValue(ref(db, "nowPlaying"), (snapshot) => {
+
+  const data = snapshot.val();
+
+  if (data) {
+    document.getElementById("nowPlaying").innerHTML =
+      `🎵 ${data.artist} - ${data.song}`;
+  } else {
+    document.getElementById("nowPlaying").innerHTML = "Nič nehrá";
+  }
+
+});
+  
 
 import { getDatabase, ref, push, set, onValue }
 
