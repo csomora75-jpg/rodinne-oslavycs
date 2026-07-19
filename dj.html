@@ -84,23 +84,35 @@ onValue(ref(db, "songs"), (snapshot) => {
 
   snapshot.forEach((child) => {
 
-    const data = child.val();
+const data = child.val();
+const id = child.key;
 
-    list.innerHTML += `
+list.innerHTML += `
     
-    <div class="card">
+<div class="card">
 
-      🎤 ${data.artist}<br>
-      🎵 ${data.song}<br>
-      👤 ${data.name || "Hosť"}
+🎤 ${data.artist}<br>
+🎵 ${data.song}<br>
+👤 ${data.name || "Hosť"}
 
-      <br><br>
+<br><br>
 
-      <button onclick="playYoutube('${data.artist}','${data.song}')">
-      ▶️ YouTube
-      </button>
+<button onclick="playYoutube('${data.artist}','${data.song}')">
+▶️ YouTube
+</button>
 
-    </div>
+<button onclick="markPlayed('${id}')">
+✅ Prehrané
+</button>
+
+<button onclick="deleteSong('${id}')">
+🗑️ Zmazať
+</button>
+
+</div>
+
+`;
+    
 
     `;
 
