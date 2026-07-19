@@ -109,6 +109,10 @@ ${data.played ? "✅ PREHRANÉ" : "🟢 ČAKÁ"}
 <button onclick="markPlayed('${id}')">
 ✅ Prehrané
 </button>
+<button onclick="nowPlaying('${id}','${data.artist}','${data.song}')">
+🎶 Teraz hrá
+</button>
+
 
 <button onclick="deleteSong('${id}')">
 🗑️ Zmazať
