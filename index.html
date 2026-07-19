@@ -67,7 +67,8 @@ button {
 <button id="addSong">Pridať želanie</button>
   
 
-<h2>🎶 Želania hostí</h
+<h2>🎶 Želania hostí</h2>
+  
 <div id="songList"></div>
   <div class="card">
   🎧 Teraz hrá:
@@ -77,13 +78,7 @@ button {
 
 </div>
 
-</body>
-</html>
-<div id="songList"></div>
-window.nowPlaying = function(artist, song) {
-  document.getElementById("nowPlaying").innerHTML =
-    "🎵 " + artist + " - " + song;
-};
+
 
 <script type="module">
 
@@ -166,28 +161,24 @@ onValue(ref(db, "songs"), (snapshot) => {
 });
   
 </script>
-...
-});
-
-</script>
-
-</script>
 
 <script>
-function playYoutube(artist, song){
+function playYoutube(artist, song) {
 
-    const search = encodeURIComponent(artist + " " + song);
+  const search = encodeURIComponent(artist + " " + song);
 
-    window.open(
-      "https://www.youtube.com/results?search_query=" + search,
-      "_blank"
-  
+  window.open(
+    "https://www.youtube.com/results?search_query=" + search,
+    "_blank"
+  );
+
+}
+
 function nowPlaying(artist, song) {
   document.getElementById("nowPlaying").innerHTML =
     "🎵 " + artist + " - " + song;
 }
   
-
 </script>
 
 </body>
