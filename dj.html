@@ -51,13 +51,21 @@ button {
 
 <div id="songList"></div>
 <script type="module">
+function setNowPlaying(id, artist, song) {
 
-function setNowPlaying(artist, song) {
   set(ref(db, "nowPlaying"), {
     artist,
     song
   });
+
+  update(ref(db, "songs/" + id), {
+    played: true
+  });
+
 }
+
+window.setNowPlaying = setNowPlaying;
+  
 
 window.setNowPlaying = setNowPlaying;
   
