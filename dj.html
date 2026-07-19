@@ -89,7 +89,8 @@ const id = child.key;
 
 list.innerHTML += `
     
-<div class="card">
+<div class="card" style="${data.played ? 'opacity:0.5' : ''}">
+
 
 🎤 ${data.artist}<br>
 🎵 ${data.song}<br>
