@@ -132,6 +132,24 @@ window.playYoutube = function(artist, song){
  );
 
 }
+window.deleteSong = function(id){
+
+  if(confirm("Naozaj vymazať skladbu?")){
+
+    remove(ref(db, "songs/" + id));
+
+  }
+
+}
+
+
+window.markPlayed = function(id){
+
+  update(ref(db, "songs/" + id), {
+    played: true
+  });
+
+}
 
 
 </script>
