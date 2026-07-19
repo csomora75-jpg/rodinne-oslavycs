@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Rodinné OslavyCS</title>
+
 <style>
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -14,11 +17,15 @@ body {
 }
 
 .container {
-  padding: 25px;
+  padding: 20px;
 }
 
 h1 {
   font-size: 32px;
+}
+
+h2 {
+  margin-top: 30px;
 }
 
 input, button {
@@ -39,156 +46,61 @@ button {
   background: #d4af37;
   color: black;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .card {
   background: #111;
-  margin: 10px auto;
+  margin: 15px auto;
   padding: 20px;
   border-radius: 12px;
   max-width: 450px;
-  margin-bottom: 25px;
+}
+
+.now {
+  border: 2px solid #d4af37;
 }
 
 </style>
+
 </head>
 
 <body>
-  
+
+<div class="container">
 
 <h1>🎵 Rodinné OslavyCS 🎵</h1>
 
 <p>Pošli svoju obľúbenú pesničku</p>
 
+
 <input id="artist" placeholder="Interpret">
+
 <input id="song" placeholder="Názov piesne">
+
 <input id="name" placeholder="Tvoje meno (voliteľné)">
 
-<button id="addSong">Pridať želanie</button>
-  
 
-<h2>🎶 Želania hostí</h2>
-  
-<div id="songList"></div>
-  <div class="card">
+<button id="addSong">
+Pridať želanie
+</button>
 
-  
+
+<div class="card now">
+
+<h2>🎧 Teraz hrá</h2>
+
+<p id="nowPlaying">
+Nič nehrá
+</p>
 
 </div>
 
 
-
-<script type="module">
-
-  onValue(ref(db, "nowPlaying"), (snapshot) => {
-
-  const data = snapshot.val();
-
-  if (data) {
-    document.getElementById("nowPlaying").innerHTML =
-      `🎵 ${data.artist} - ${data.song}`;
-  } else {
-    document.getElementById("nowPlaying").innerHTML = "Nič nehrá";
-  }
-
-});
-  
-
-import { getDatabase, ref, push, set, onValue }
-
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+<h2>🎶 Želania hostí</h2>
 
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
-  authDomain: "rodinne-oslavycs.firebaseapp.com",
-  databaseURL: "https://rodinne-oslavycs-default-rtdb.firebaseio.com",
-  projectId: "rodinne-oslavycs",
-  storageBucket: "rodinne-oslavycs.firebasestorage.app",
-  messagingSenderId: "222862508260",
-  appId: "1:222862508260:web:dfaf0baccb068ddcf42cf1"
-};
+<div id="songList"></div>
 
 
-const app = initializeApp(firebaseConfig);
-
-const db = getDatabase(app);
-
-
-document.getElementById("addSong").addEventListener("click", async () => {
-
-  const artist = document.getElementById("artist").value.trim();
-  const song = document.getElementById("song").value.trim();
-  const name = document.getElementById("name").value.trim();
-
-  if (!artist || !song) {
-    alert("Vyplň interpreta a názov piesne.");
-    return;
-  }
-
-  await set(push(ref(db, "songs")), {
-    artist,
-    song,
-    name,
-    time: Date.now()
-  });
-
-  alert("🎵 Pesnička pridaná!");
-
-});
-const list = document.getElementById("songList");
-
-onValue(ref(db, "songs"), (snapshot) => {
-
-  list.innerHTML = "";
-
-  snapshot.forEach((child) => {
-
-    const data = child.val();
-
-    list.innerHTML += `
-  <div class="card">
-    <h3>🎤 ${data.artist}</h3>
-    <p>🎵 ${data.song}</p>
-    <p>👤 ${data.name || "Hosť"}</p>
-
-
-<button onclick="playYoutube('${data.artist}','${data.song}')">
-  ▶️ YouTube
-</button>
-
-
-  </div>
-`;
-
-
-  });
-
-});
-  
-</script>
-
-<script>
-function playYoutube(artist, song) {
-
-  const search = encodeURIComponent(artist + " " + song);
-
-  window.open(
-    "https://www.youtube.com/results?search_query=" + search,
-    "_blank"
-  );
-
-}
-
-function nowPlaying(artist, song) {
-  document.getElementById("nowPlaying").innerHTML =
-    "🎵 " + artist + " - " + song;
-}
-  
-</script>
-
-</body>
-</html>
+</div>
