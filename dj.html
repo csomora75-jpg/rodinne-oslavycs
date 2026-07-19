@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="sk">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,76 +7,50 @@
 <title>DJ Panel Rodinné OslavyCS</title>
 
 <style>
-
-body {
-  background:#000;
-  color:#d4af37;
-  font-family:Arial,sans-serif;
-  text-align:center;
+body{
+    background:#000;
+    color:#d4af37;
+    font-family:Arial,sans-serif;
+    text-align:center;
 }
 
-h1 {
-  font-size:32px;
+h1{
+    font-size:32px;
 }
 
-.card {
-  background:#111;
-  margin:15px auto;
-  padding:20px;
-  border-radius:15px;
-  max-width:450px;
+.card{
+    background:#111;
+    margin:15px auto;
+    padding:20px;
+    border-radius:15px;
+    max-width:450px;
 }
 
-button {
-  background:#d4af37;
-  color:#000;
-  border:0;
-  padding:14px;
-  margin:5px;
-  border-radius:10px;
-  font-size:18px;
-  font-weight:bold;
-  width:90%;
+button{
+    background:#d4af37;
+    color:#000;
+    border:0;
+    padding:14px;
+    margin:5px;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    width:90%;
 }
-
 </style>
 
 </head>
-
 
 <body>
 
 <h1>🎧 DJ Panel<br>Rodinné OslavyCS</h1>
 
 <div id="songList"></div>
+
 <script type="module">
-function setNowPlaying(id, artist, song) {
 
-  set(ref(db, "nowPlaying"), {
-    artist,
-    song
-  });
-
-  update(ref(db, "songs/" + id), {
-    played: true
-  });
-
-}
-
-window.setNowPlaying = setNowPlaying;
-  
-
-window.setNowPlaying = setNowPlaying;
-  
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-import { getDatabase, ref, onValue, remove, update, set }
-
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
-  
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getDatabase, ref, onValue, remove, update, set } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
@@ -89,107 +62,98 @@ const firebaseConfig = {
   appId: "1:222862508260:web:dfaf0baccb068ddcf42cf1"
 };
 
-
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
 
 const list = document.getElementById("songList");
 
+window.setNowPlaying = function(id, artist, song){
 
-onValue(ref(db, "songs"), (snapshot) => {
+    set(ref(db,"nowPlaying"),{
+        artist: artist,
+        song: song
+    });
 
-  list.innerHTML = "";
+    update(ref(db,"songs/"+id),{
+        played:true
+    });
 
-  snapshot.forEach((child) => {
+}
 
-const data = child.val();
-const id = child.key;
+window.markPlayed = function(id){
 
-list.innerHTML += `
-    
-<div class="card" style="${data.played ? 'opacity:0.5' : ''}">
+    update(ref(db,"songs/"+id),{
+        played:true
+    });
 
+}
 
-🎤 ${data.artist}<br>
-🎵 ${data.song}<br>
-👤 ${data.name || "Hosť"}<br>
+window.deleteSong = function(id){
 
-${data.played ? "✅ PREHRANÉ" : "🟢 ČAKÁ"}
+    if(confirm("Naozaj vymazať skladbu?")){
+        remove(ref(db,"songs/"+id));
+    }
 
+}
 
-<br><br>
+window.playYoutube = function(artist,song){
 
-<button onclick="setNowPlaying('${id}','${data.artist}','${data.song}')">
-🎧 Práve hrá
+    const search = encodeURIComponent(artist+" "+song);
 
-</button>
+    window.open(
+        "https://www.youtube.com/results?search_query="+search,
+        "_blank"
+    );
 
-<button onclick="playYoutube('${data.artist}','${data.song}')">
-  ▶️ YouTube
-</button>
+}
 
+onValue(ref(db,"songs"),(snapshot)=>{
 
-<button onclick="markPlayed('${id}')">
-✅ Prehrané
-</button>
+    list.innerHTML="";
 
-<button onclick="deleteSong('${id}')">
-🗑️ Zmazať
-</button>
+    snapshot.forEach((child)=>{
 
-</div>
+        const data=child.val();
+        const id=child.key;
 
-`;
-    
+        list.innerHTML += `
+        <div class="card" style="${data.played ? 'opacity:0.5' : ''}">
 
+        <h2>🎤 ${data.artist}</h2>
 
-  });
+        <p>
+        🎵 ${data.song}<br>
+        👤 ${data.name || "Hosť"}
+        </p>
+
+        <b>${data.played ? "✅ PREHRANÉ" : "🟢 ČAKÁ"}</b>
+
+        <br><br>
+
+        <button onclick="setNowPlaying('${id}','${data.artist}','${data.song}')">
+        🎧 Práve hrá
+        </button>
+
+        <button onclick="playYoutube('${data.artist}','${data.song}')">
+        ▶️ YouTube
+        </button>
+
+        <button onclick="markPlayed('${id}')">
+        ✅ Prehrané
+        </button>
+
+        <button onclick="deleteSong('${id}')">
+        🗑️ Zmazať
+        </button>
+
+        </div>
+        `;
+
+    });
 
 });
 
-
-window.playYoutube = function(artist, song){
-
- const search =
- encodeURIComponent(artist + " " + song);
-
- window.open(
- "https://www.youtube.com/results?search_query=" + search,
- "_blank"
- );
-
-}
-window.deleteSong = function(id){
-
-  if(confirm("Naozaj vymazať skladbu?")){
-
-    remove(ref(db, "songs/" + id));
-
-  }
-
-}
-
-window.markPlayed = function(id) {
-
-  update(ref(db, "songs/" + id), {
-    played: true
-  });
-
-}
-
-
-
-  update(ref(db, "songs/" + id), {
-    played: true
-  });
-
-}
-
-
 </script>
-  
 
 </body>
-
 </html>
