@@ -80,6 +80,10 @@ button {
 </body>
 </html>
 <div id="songList"></div>
+window.nowPlaying = function(artist, song) {
+  document.getElementById("nowPlaying").innerHTML =
+    "🎵 " + artist + " - " + song;
+};
 
 <script type="module">
 
