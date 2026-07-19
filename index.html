@@ -104,3 +104,90 @@ Nič nehrá
 
 
 </div>
+<script>
+
+
+
+</script>
+
+</body>
+
+<script>
+
+const addSong = document.getElementById("addSong");
+const songList = document.getElementById("songList");
+const nowPlaying = document.getElementById("nowPlaying");
+
+let songs = [];
+
+addSong.addEventListener("click", () => {
+
+    const artist = document.getElementById("artist").value.trim();
+    const song = document.getElementById("song").value.trim();
+    const name = document.getElementById("name").value.trim();
+
+    if (artist === "" || song === "") {
+        alert("Vyplň interpreta aj názov piesne.");
+        return;
+    }
+
+    songs.push({
+        artist,
+        song,
+        name
+    });
+
+    document.getElementById("artist").value = "";
+    document.getElementById("song").value = "";
+    document.getElementById("name").value = "";
+
+    renderSongs();
+});
+
+function renderSongs() {
+
+    songList.innerHTML = "";
+
+    songs.forEach((item, index) => {
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+            <h3>${item.artist}</h3>
+            <p>${item.song}</p>
+            <small>${item.name ? "Želá si: " + item.name : ""}</small>
+            <br><br>
+            <button onclick="playSong(${index})">
+                Prehrať
+            </button>
+        `;
+
+        songList.appendChild(div);
+
+    });
+
+}
+
+function playSong(index) {
+
+    const item = songs[index];
+
+    nowPlaying.innerHTML =
+        "🎵 " + item.artist + " – " + item.song;
+
+    songs.splice(index, 1);
+
+    renderSongs();
+
+}
+
+</script>
+
+</body>
+</html>
+
+  
+</html>
+
+  
