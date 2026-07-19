@@ -132,12 +132,18 @@ onValue(ref(db, "songs"), (snapshot) => {
     const data = child.val();
 
     list.innerHTML += `
-      <div class="card">
-        🎤 ${data.artist}<br>
-        🎵 ${data.song}<br>
-        👤 ${data.name || "Hosť"}
-      </div>
-    `;
+  <div class="card">
+    <h3>🎤 ${data.artist}</h3>
+    <p>🎵 ${data.song}</p>
+    <p>👤 ${data.name || "Hosť"}</p>
+
+    <button onclick="playYoutube('${data.artist}','${data.song}')">
+      ▶️ YouTube
+    </button>
+
+  </div>
+`;
+
 
   });
 
