@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>DJ Panel Rodinné OslavyCS</title>
 
 <style>
+
 body{
-    background:#000;
+    background:radial-gradient(circle,#222,#000);
     color:#d4af37;
     font-family:Arial,sans-serif;
     text-align:center;
+    margin:0;
 }
 
 h1{
     font-size:32px;
+    margin-top:25px;
 }
 
 .card{
@@ -24,136 +28,395 @@ h1{
     padding:20px;
     border-radius:15px;
     max-width:450px;
+    box-shadow:0 0 20px #d4af37;
+}
+
+.now{
+    border:2px solid #d4af37;
+    font-size:22px;
 }
 
 button{
+
     background:#d4af37;
     color:#000;
     border:0;
+
     padding:14px;
-    margin:5px;
-    border-radius:10px;
-    font-size:18px;
+    margin:6px;
+
+    border-radius:12px;
+
+    font-size:17px;
     font-weight:bold;
+
     width:90%;
+
 }
+
+button:hover{
+    background:white;
+}
+
+
+.wait{
+    font-size:20px;
+}
+
+
+.done{
+    opacity:0.45;
+}
+
+
 </style>
 
 </head>
 
+
 <body>
 
-<h1>🎧 DJ Panel<br>Rodinné OslavyCS</h1>
+
+<h1>
+🎧 DJ PANEL<br>
+Rodinné OslavyCS
+</h1>
+
+
+<div class="card now" id="nowPlaying">
+
+🎧 TERAZ HRÁ<br><br>
+Čakám na skladbu...
+
+</div>
+
+
+<div class="card wait">
+
+⏳ Čakajúce skladby:
+<b id="count">0</b>
+
+</div>
+
 
 <div id="songList"></div>
 
+
+
+
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import { getDatabase, ref, onValue, remove, update, set } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+import { getDatabase, ref, onValue, remove, update, set }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
-  authDomain: "rodinne-oslavycs.firebaseapp.com",
-  databaseURL: "https://rodinne-oslavycs-default-rtdb.firebaseio.com",
-  projectId: "rodinne-oslavycs",
-  storageBucket: "rodinne-oslavycs.firebasestorage.app",
-  messagingSenderId: "222862508260",
-  appId: "1:222862508260:web:dfaf0baccb068ddcf42cf1"
+
+
+apiKey: "AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
+
+authDomain:"rodinne-oslavycs.firebaseapp.com",
+
+databaseURL:"https://rodinne-oslavycs-default-rtdb.firebaseio.com",
+
+projectId:"rodinne-oslavycs",
+
+storageBucket:"rodinne-oslavycs.firebasestorage.app",
+
+messagingSenderId:"222862508260",
+
+appId:"1:222862508260:web:dfaf0baccb068ddcf42cf1"
+
 };
 
+
+
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
-const list = document.getElementById("songList");
+const db=getDatabase(app);
 
-window.setNowPlaying = function(id, artist, song){
 
-    set(ref(db,"nowPlaying"),{
-        artist: artist,
-        song: song
-    });
 
-    update(ref(db,"songs/"+id),{
-        played:true
-    });
+const list=document.getElementById("songList");
 
-}
 
-window.markPlayed = function(id){
 
-    update(ref(db,"songs/"+id),{
-        played:true
-    });
 
-}
 
-window.deleteSong = function(id){
+window.setNowPlaying=function(id,artist,song){
 
-    if(confirm("Naozaj vymazať skladbu?")){
-        remove(ref(db,"songs/"+id));
-    }
 
-}
+set(ref(db,"nowPlaying"),{
 
-window.playYoutube = function(artist,song){
+artist:artist,
 
-    const search = encodeURIComponent(artist+" "+song);
-
-    window.open(
-        "https://www.youtube.com/results?search_query="+search,
-        "_blank"
-    );
-
-}
-
-onValue(ref(db,"songs"),(snapshot)=>{
-
-    list.innerHTML="";
-
-    snapshot.forEach((child)=>{
-
-        const data=child.val();
-        const id=child.key;
-
-        list.innerHTML += `
-        <div class="card" style="${data.played ? 'opacity:0.5' : ''}">
-
-        <h2>🎤 ${data.artist}</h2>
-
-        <p>
-        🎵 ${data.song}<br>
-        👤 ${data.name || "Hosť"}
-        </p>
-
-        <b>${data.played ? "✅ PREHRANÉ" : "🟢 ČAKÁ"}</b>
-
-        <br><br>
-
-        <button onclick="setNowPlaying('${id}','${data.artist}','${data.song}')">
-        🎧 Práve hrá
-        </button>
-
-        <button onclick="playYoutube('${data.artist}','${data.song}')">
-        ▶️ YouTube
-        </button>
-
-        <button onclick="markPlayed('${id}')">
-        ✅ Prehrané
-        </button>
-
-        <button onclick="deleteSong('${id}')">
-        🗑️ Zmazať
-        </button>
-
-        </div>
-        `;
-
-    });
+song:song
 
 });
 
+
+update(ref(db,"songs/"+id),{
+
+played:true
+
+});
+
+
+}
+
+
+
+
+
+
+window.markPlayed=function(id){
+
+
+update(ref(db,"songs/"+id),{
+
+played:true
+
+});
+
+
+}
+
+
+
+
+
+
+
+window.deleteSong=function(id){
+
+
+if(confirm("Naozaj vymazať skladbu?")){
+
+
+remove(ref(db,"songs/"+id));
+
+
+}
+
+
+}
+
+
+
+
+
+
+window.playYoutube=function(artist,song){
+
+
+let q=encodeURIComponent(
+artist+" "+song
+);
+
+
+window.open(
+"https://www.youtube.com/results?search_query="+q,
+"_blank"
+);
+
+
+}
+
+
+
+
+
+
+// TERAZ HRÁ
+
+
+onValue(ref(db,"nowPlaying"),snap=>{
+
+
+let d=snap.val();
+
+
+if(d){
+
+
+document.getElementById("nowPlaying").innerHTML=
+
+`
+🎧 TERAZ HRÁ<br><br>
+
+<b>${d.artist}</b><br>
+
+${d.song}
+
+`;
+
+}
+
+
+});
+
+
+
+
+
+
+
+
+
+// ZOZNAM SKLADIEB
+
+
+onValue(ref(db,"songs"),snapshot=>{
+
+
+list.innerHTML="";
+
+
+let songs=[];
+
+
+snapshot.forEach(child=>{
+
+
+songs.push({
+
+id:child.key,
+
+...child.val()
+
+});
+
+
+});
+
+
+
+// nové hore
+
+songs.reverse();
+
+
+
+let waiting=0;
+
+
+
+songs.forEach(data=>{
+
+
+if(!data.played)
+waiting++;
+
+
+
+let cls=data.played ? "done" : "";
+
+
+
+list.innerHTML +=
+
+`
+
+<div class="card ${cls}">
+
+
+<h2>
+🎤 ${data.artist}
+</h2>
+
+
+<p>
+
+🎵 ${data.song}
+
+<br>
+
+👤 ${data.name || "Hosť"}
+
+</p>
+
+
+
+<b>
+
+${data.played ?
+
+"✅ PREHRANÉ"
+
+:
+
+"🟢 ČAKÁ"
+
+}
+
+</b>
+
+
+<br><br>
+
+
+
+<button onclick='setNowPlaying(${JSON.stringify(data.id)},${JSON.stringify(data.artist)},${JSON.stringify(data.song)})'>
+
+🎧 Práve hrá
+
+</button>
+
+
+
+<button onclick='playYoutube(${JSON.stringify(data.artist)},${JSON.stringify(data.song)})'>
+
+▶️ YouTube
+
+</button>
+
+
+
+<button onclick='markPlayed(${JSON.stringify(data.id)})'>
+
+✅ Prehrané
+
+</button>
+
+
+
+<button onclick='deleteSong(${JSON.stringify(data.id)})'>
+
+🗑️ Zmazať
+
+</button>
+
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+document.getElementById("count").innerHTML=waiting;
+
+
+
+});
+
+
+
+
+
 </script>
+
 
 </body>
 </html>
