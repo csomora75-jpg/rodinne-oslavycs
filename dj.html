@@ -52,21 +52,7 @@ button {
 <div id="songList"></div>
 <script type="module">
 
-onValue(ref(db, "nowPlaying"), (snapshot) => {
-
-  const data = snapshot.val();
-
-  if (data) {
-    document.getElementById("nowPlaying").innerHTML =
-      `🎵 ${data.artist} - ${data.song}`;
-  } else {
-    document.getElementById("nowPlaying").innerHTML = "Nič nehrá";
-  }
-
-});
-
-  
-  function setNowPlaying(artist, song) {
+function setNowPlaying(artist, song) {
   set(ref(db, "nowPlaying"), {
     artist,
     song
