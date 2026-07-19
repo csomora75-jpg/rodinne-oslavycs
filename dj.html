@@ -93,7 +93,10 @@ list.innerHTML += `
 
 🎤 ${data.artist}<br>
 🎵 ${data.song}<br>
-👤 ${data.name || "Hosť"}
+👤 ${data.name || "Hosť"}<br>
+
+${data.played ? "✅ PREHRANÉ" : "🟢 ČAKÁ"}
+
 
 <br><br>
 
