@@ -161,18 +161,15 @@ window.deleteSong = function(id){
 
 }
 
+window.markPlayed = function(id) {
 
-window.markPlayed = function(id){
-window.nowPlaying = function(id, artist, song){
-
-  set(ref(db, "nowPlaying"), {
-    artist: artist,
-    song: song
+  update(ref(db, "songs/" + id), {
+    played: true
   });
 
-  alert("🎶 Teraz hrá: " + artist + " - " + song);
-
 }
+
+
 
   update(ref(db, "songs/" + id), {
     played: true
