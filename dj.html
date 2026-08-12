@@ -1,422 +1,367 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DJ Panel Rodinné OslavyCS</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: radial-gradient(circle, #222, #000);
+      color: #d4af37;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+    }
 
-<title>DJ Panel Rodinné OslavyCS</title>
+    h1 {
+      font-size: 32px;
+      margin-top: 25px;
+    }
 
-<style>
+    .card {
+      background: #111;
+      margin: 15px auto;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 450px;
+      box-shadow: 0 0 20px #d4af37;
+    }
 
-body{
-    background:radial-gradient(circle,#222,#000);
-    color:#d4af37;
-    font-family:Arial,sans-serif;
-    text-align:center;
-    margin:0;
-}
+    .now {
+      border: 2px solid #d4af37;
+      font-size: 22px;
+    }
 
-h1{
-    font-size:32px;
-    margin-top:25px;
-}
+    button {
+      background: #d4af37;
+      color: #000;
+      border: 0;
+      padding: 14px;
+      margin: 6px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      width: 90%;
+      cursor: pointer;
+    }
 
-.card{
-    background:#111;
-    margin:15px auto;
-    padding:20px;
-    border-radius:15px;
-    max-width:450px;
-    box-shadow:0 0 20px #d4af37;
-}
+    button:hover {
+      background: white;
+    }
 
-.now{
-    border:2px solid #d4af37;
-    font-size:22px;
-}
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
 
-button{
+    input {
+      box-sizing: border-box;
+      width: 90%;
+      padding: 14px;
+      margin: 7px;
+      border: 1px solid #d4af37;
+      border-radius: 10px;
+      background: #222;
+      color: white;
+      font-size: 17px;
+    }
 
-    background:#d4af37;
-    color:#000;
-    border:0;
+    .wait {
+      font-size: 20px;
+    }
 
-    padding:14px;
-    margin:6px;
+    .done {
+      opacity: 0.45;
+    }
 
-    border-radius:12px;
+    .message {
+      min-height: 22px;
+      color: #fff;
+    }
 
-    font-size:17px;
-    font-weight:bold;
+    .user-info {
+      color: white;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
 
-    width:90%;
+    .logout-button {
+      max-width: 300px;
+      background: #777;
+      color: white;
+    }
 
-}
-
-button:hover{
-    background:white;
-}
-
-
-.wait{
-    font-size:20px;
-}
-
-
-.done{
-    opacity:0.45;
-}
-
-
-</style>
-
+    [hidden] {
+      display: none !important;
+    }
+  </style>
 </head>
 
-
 <body>
-
-
-<h1>
-🎧 DJ PANEL<br>
-Rodinné OslavyCS
-</h1>
-
-
-<div class="card now" id="nowPlaying">
-
-🎧 TERAZ HRÁ<br><br>
-Čakám na skladbu...
-
-</div>
-
-
-<div class="card wait">
-
-⏳ Čakajúce skladby:
-<b id="count">0</b>
-
-</div>
-
-
-<div id="songList"></div>
-
-
-
-
-<script type="module">
-
-
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-import { getDatabase, ref, onValue, remove, update, set }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
-
-
-
-const firebaseConfig = {
-
-
-apiKey: "AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
-
-authDomain:"rodinne-oslavycs.firebaseapp.com",
-
-databaseURL:"https://rodinne-oslavycs-default-rtdb.firebaseio.com",
-
-projectId:"rodinne-oslavycs",
-
-storageBucket:"rodinne-oslavycs.firebasestorage.app",
-
-messagingSenderId:"222862508260",
-
-appId:"1:222862508260:web:dfaf0baccb068ddcf42cf1"
-
-};
-
-
-
-const app = initializeApp(firebaseConfig);
-
-const db=getDatabase(app);
-
-
-
-const list=document.getElementById("songList");
-
-
-
-
-
-window.setNowPlaying=function(id,artist,song){
-
-
-set(ref(db,"nowPlaying"),{
-
-artist:artist,
-
-song:song
-
-});
-
-
-update(ref(db,"songs/"+id),{
-
-played:true
-
-});
-
-
-}
-
-
-
-
-
-
-window.markPlayed=function(id){
-
-
-update(ref(db,"songs/"+id),{
-
-played:true
-
-});
-
-
-}
-
-
-
-
-
-
-
-window.deleteSong=function(id){
-
-
-if(confirm("Naozaj vymazať skladbu?")){
-
-
-remove(ref(db,"songs/"+id));
-
-
-}
-
-
-}
-
-
-
-
-
-
-window.playYoutube=function(artist,song){
-
-
-let q=encodeURIComponent(
-artist+" "+song
-);
-
-
-window.open(
-"https://www.youtube.com/results?search_query="+q,
-"_blank"
-);
-
-
-}
-
-
-
-
-
-
-// TERAZ HRÁ
-
-
-onValue(ref(db,"nowPlaying"),snap=>{
-
-
-let d=snap.val();
-
-
-if(d){
-
-
-document.getElementById("nowPlaying").innerHTML=
-
-`
-🎧 TERAZ HRÁ<br><br>
-
-<b>${d.artist}</b><br>
-
-${d.song}
-
-`;
-
-}
-
-
-});
-
-
-
-
-
-
-
-
-
-// ZOZNAM SKLADIEB
-
-
-onValue(ref(db,"songs"),snapshot=>{
-
-
-list.innerHTML="";
-
-
-let songs=[];
-
-
-snapshot.forEach(child=>{
-
-
-songs.push({
-
-id:child.key,
-
-...child.val()
-
-});
-
-
-});
-
-
-
-// nové hore
-
-songs.reverse();
-
-
-
-let waiting=0;
-
-
-
-songs.forEach(data=>{
-
-
-if(!data.played)
-waiting++;
-
-
-
-let cls=data.played ? "done" : "";
-
-
-
-list.innerHTML +=
-
-`
-
-<div class="card ${cls}">
-
-
-<h2>
-🎤 ${data.artist}
-</h2>
-
-
-<p>
-
-🎵 ${data.song}
-
-<br>
-
-👤 ${data.name || "Hosť"}
-
-</p>
-
-
-
-<b>
-
-${data.played ?
-
-"✅ PREHRANÉ"
-
-:
-
-"🟢 ČAKÁ"
-
-}
-
-</b>
-
-
-<br><br>
-
-
-
-<button onclick='setNowPlaying(${JSON.stringify(data.id)},${JSON.stringify(data.artist)},${JSON.stringify(data.song)})'>
-
-🎧 Práve hrá
-
-</button>
-
-
-
-<button onclick='playYoutube(${JSON.stringify(data.artist)},${JSON.stringify(data.song)})'>
-
-▶️ YouTube
-
-</button>
-
-
-
-<button onclick='markPlayed(${JSON.stringify(data.id)})'>
-
-✅ Prehrané
-
-</button>
-
-
-
-<button onclick='deleteSong(${JSON.stringify(data.id)})'>
-
-🗑️ Zmazať
-
-</button>
-
-
-
-</div>
-
-
-`;
-
-
-
-});
-
-
-
-document.getElementById("count").innerHTML=waiting;
-
-
-
-});
-
-
-
-
-
-</script>
-
-
+  <h1>🎧 DJ PANEL<br>Rodinné OslavyCS</h1>
+
+  <div class="card" id="loginCard">
+    <h2>🔐 Prihlásenie DJ</h2>
+    <form id="loginForm">
+      <input id="email" type="email" autocomplete="username" placeholder="E-mail" required>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Heslo" required>
+      <button id="loginButton" type="submit">Prihlásiť sa</button>
+    </form>
+    <p class="message" id="loginMessage"></p>
+  </div>
+
+  <main id="djContent" hidden>
+    <p class="user-info">Prihlásený: <span id="userEmail"></span></p>
+    <button class="logout-button" id="logoutButton" type="button">Odhlásiť sa</button>
+
+    <div class="card now" id="nowPlaying">
+      🎧 TERAZ HRÁ<br><br>
+      Čakám na skladbu...
+    </div>
+
+    <div class="card wait">
+      ⏳ Čakajúce skladby:
+      <b id="count">0</b>
+    </div>
+
+    <div id="songList"></div>
+  </main>
+
+  <script type="module">
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+    import { getDatabase, ref, onValue, remove, update, set }
+      from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signInWithEmailAndPassword,
+      signOut,
+      setPersistence,
+      browserLocalPersistence
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBhsdE4X-bCRslQmx-2I4Fp3lbXffGy3GM",
+      authDomain: "rodinne-oslavycs.firebaseapp.com",
+      databaseURL: "https://rodinne-oslavycs-default-rtdb.firebaseio.com",
+      projectId: "rodinne-oslavycs",
+      storageBucket: "rodinne-oslavycs.firebasestorage.app",
+      messagingSenderId: "222862508260",
+      appId: "1:222862508260:web:dfaf0baccb068ddcf42cf1"
+    };
+
+    const DJ_EMAIL = "csomora75@gmail.com";
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    const loginCard = document.getElementById("loginCard");
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const loginMessage = document.getElementById("loginMessage");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const djContent = document.getElementById("djContent");
+    const userEmail = document.getElementById("userEmail");
+    const logoutButton = document.getElementById("logoutButton");
+    const nowPlaying = document.getElementById("nowPlaying");
+    const list = document.getElementById("songList");
+    const count = document.getElementById("count");
+
+    let stopNowPlayingListener = null;
+    let stopSongsListener = null;
+
+    function showLoginMessage(text) {
+      loginMessage.textContent = text;
+    }
+
+    function friendlyAuthError(error) {
+      switch (error.code) {
+        case "auth/invalid-credential":
+        case "auth/wrong-password":
+        case "auth/user-not-found":
+          return "Nesprávny e-mail alebo heslo.";
+        case "auth/too-many-requests":
+          return "Príliš veľa pokusov. Skúste to neskôr.";
+        case "auth/network-request-failed":
+          return "Skontrolujte internetové pripojenie.";
+        case "auth/unauthorized-domain":
+          return "Doména GitHub Pages ešte nie je povolená vo Firebase Authentication.";
+        default:
+          return "Prihlásenie sa nepodarilo. Skúste to znova.";
+      }
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      loginButton.disabled = true;
+      showLoginMessage("Prihlasujem...");
+
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        await signInWithEmailAndPassword(
+          auth,
+          emailInput.value.trim(),
+          passwordInput.value
+        );
+        passwordInput.value = "";
+      } catch (error) {
+        showLoginMessage(friendlyAuthError(error));
+      } finally {
+        loginButton.disabled = false;
+      }
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      const isDj = user && user.email && user.email.toLowerCase() === DJ_EMAIL;
+
+      if (user && !isDj) {
+        await signOut(auth);
+        showLoginMessage("Tento účet nemá prístup do DJ panela.");
+        return;
+      }
+
+      if (isDj) {
+        loginCard.hidden = true;
+        djContent.hidden = false;
+        userEmail.textContent = user.email;
+        showLoginMessage("");
+        startDatabaseListeners();
+      } else {
+        stopDatabaseListeners();
+        djContent.hidden = true;
+        loginCard.hidden = false;
+        userEmail.textContent = "";
+        list.replaceChildren();
+        count.textContent = "0";
+      }
+    });
+
+    function stopDatabaseListeners() {
+      if (stopNowPlayingListener) {
+        stopNowPlayingListener();
+        stopNowPlayingListener = null;
+      }
+
+      if (stopSongsListener) {
+        stopSongsListener();
+        stopSongsListener = null;
+      }
+    }
+
+    function startDatabaseListeners() {
+      stopDatabaseListeners();
+
+      stopNowPlayingListener = onValue(ref(db, "nowPlaying"), (snapshot) => {
+        const data = snapshot.val();
+        nowPlaying.replaceChildren();
+
+        const title = document.createTextNode("🎧 TERAZ HRÁ");
+        nowPlaying.append(title, document.createElement("br"), document.createElement("br"));
+
+        if (!data) {
+          nowPlaying.append(document.createTextNode("Čakám na skladbu..."));
+          return;
+        }
+
+        const artist = document.createElement("b");
+        artist.textContent = data.artist || "Neznámy interpret";
+        nowPlaying.append(
+          artist,
+          document.createElement("br"),
+          document.createTextNode(data.song || "Neznáma skladba")
+        );
+      });
+
+      stopSongsListener = onValue(ref(db, "songs"), (snapshot) => {
+        const songs = [];
+
+        snapshot.forEach((child) => {
+          songs.push({ id: child.key, ...child.val() });
+        });
+
+        songs.reverse();
+        list.replaceChildren();
+
+        let waiting = 0;
+        songs.forEach((songData) => {
+          if (!songData.played) waiting++;
+          list.appendChild(createSongCard(songData));
+        });
+
+        count.textContent = String(waiting);
+      });
+    }
+
+    function createButton(label, action) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.addEventListener("click", action);
+      return button;
+    }
+
+    function createSongCard(data) {
+      const card = document.createElement("div");
+      card.className = data.played ? "card done" : "card";
+
+      const artist = document.createElement("h2");
+      artist.textContent = `🎤 ${data.artist || "Neznámy interpret"}`;
+
+      const details = document.createElement("p");
+      details.append(
+        document.createTextNode(`🎵 ${data.song || "Neznáma skladba"}`),
+        document.createElement("br"),
+        document.createTextNode(`👤 ${data.name || "Hosť"}`)
+      );
+
+      const status = document.createElement("b");
+      status.textContent = data.played ? "✅ PREHRANÉ" : "🟢 ČAKÁ";
+
+      card.append(artist, details, status, document.createElement("br"), document.createElement("br"));
+
+      card.append(
+        createButton("🎧 Práve hrá", () => setNowPlaying(data)),
+        createButton("▶️ YouTube", () => playYoutube(data.artist, data.song)),
+        createButton("✅ Prehrané", () => markPlayed(data.id)),
+        createButton("🗑️ Zmazať", () => deleteSong(data.id))
+      );
+
+      return card;
+    }
+
+    async function setNowPlaying(data) {
+      await set(ref(db, "nowPlaying"), {
+        artist: data.artist || "Neznámy interpret",
+        song: data.song || "Neznáma skladba"
+      });
+
+      await update(ref(db, `songs/${data.id}`), { played: true });
+    }
+
+    async function markPlayed(id) {
+      await update(ref(db, `songs/${id}`), { played: true });
+    }
+
+    async function deleteSong(id) {
+      if (confirm("Naozaj vymazať skladbu?")) {
+        await remove(ref(db, `songs/${id}`));
+      }
+    }
+
+    function playYoutube(artist, song) {
+      const query = encodeURIComponent(`${artist || ""} ${song || ""}`.trim());
+      window.open(`https://www.youtube.com/results?search_query=${query}`, "_blank", "noopener");
+    }
+  </script>
 </body>
 </html>
